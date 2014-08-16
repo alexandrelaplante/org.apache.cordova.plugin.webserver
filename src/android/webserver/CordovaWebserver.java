@@ -1,6 +1,7 @@
 package org.apache.cordova.plugin.webserver;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -110,16 +111,58 @@ public class CordovaWebserver extends CordovaPlugin{
         public MyHTTPD() throws IOException {
            super(PORT);
         }
-     
-        @Override
-        public Response serve(IHTTPSession s) {
 
-            final IHTTPSession session = s;
-           
+        @Override
+        public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms,
+                                   Map<String, String> files) {
+
+            final String f_uri = uri;
+            final Method f_method = method;
+            final Map<String, String> f_files = files;
+            final Map<String, String> f_parms = parms;
+            final Map<String, String> f_headers = headers;
+
+
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    message(SessionToJSON(session));
+
+                    // Convert the request data into JSON to send to the javascript
+                    try{
+                        JSONObject obj = new JSONObject();
+                        obj.put("uri", f_uri);
+
+                        String method = "";
+                        if (f_method == Method.GET){ method = "GET";}
+                        if (f_method == Method.PUT){ method = "PUT";}
+                        if (f_method == Method.POST){ method = "POST";}
+                        if (f_method == Method.DELETE){ method = "DELETE";}
+                        if (f_method == Method.HEAD){ method = "HEAD";}
+                        if (f_method == Method.OPTIONS){ method = "OPTIONS";}
+                        obj.put("method", method);
+
+                        JSONObject parms = new JSONObject();
+                        for (Map.Entry<String, String> entry : f_parms.entrySet()) {
+                          parms.put(entry.getKey(), entry.getValue());
+                        }
+                        obj.put("parms", parms);
+
+                        JSONObject headers = new JSONObject();
+                        for (Map.Entry<String, String> entry : f_headers.entrySet()) {
+                          headers.put(entry.getKey(), entry.getValue());
+                        }
+                        obj.put("headers", headers);
+
+                        JSONObject body = new JSONObject();
+                        for (Map.Entry<String, String> entry : f_files.entrySet()) {
+                            body.put(entry.getKey(), entry.getValue());
+                        }
+                        obj.put("body", body);
+                        message(obj);
+                        
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
                 }
             });
      
@@ -132,41 +175,6 @@ public class CordovaWebserver extends CordovaPlugin{
                 response = new Response(Response.Status.INTERNAL_ERROR, "text/plain", "InterruptedException");
             }
             return response;
-        }
-
-        private JSONObject SessionToJSON(IHTTPSession session){
-             
-            JSONObject obj = new JSONObject();
-
-            try {
-                obj.put("uri", session.getUri());
-                obj.put("queryParameterString", session.getQueryParameterString());
-
-                JSONObject parms = new JSONObject();
-                for (Map.Entry<String, String> entry : session.getParms().entrySet()) {
-                  parms.put(entry.getKey(), entry.getValue());
-                }
-                obj.put("parms", parms);
-
-                JSONObject headers = new JSONObject();
-                for (Map.Entry<String, String> entry : session.getHeaders().entrySet()) {
-                    headers.put(entry.getKey(), entry.getValue());
-                }
-                obj.put("headers", headers);
-
-                String method = "";
-                if (session.getMethod() == Method.GET){ method = "GET";}
-                if (session.getMethod() == Method.PUT){ method = "PUT";}
-                if (session.getMethod() == Method.POST){ method = "POST";}
-                if (session.getMethod() == Method.DELETE){ method = "DELETE";}
-                if (session.getMethod() == Method.HEAD){ method = "HEAD";}
-                if (session.getMethod() == Method.OPTIONS){ method = "OPTIONS";}
-                obj.put("method", method);
-            } catch (JSONException e){
-                e.printStackTrace();
-            }
-
-            return obj;
         }
     }
 }
