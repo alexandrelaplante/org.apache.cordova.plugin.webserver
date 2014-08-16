@@ -69,6 +69,7 @@ public class CordovaWebserver extends CordovaPlugin{
         } else if (action.contentEquals(STOP)) {
 
             server.stop();
+            return true;
 
         } else if (action.contentEquals(RESPOND)) {
 
