@@ -145,7 +145,7 @@ public class CordovaWebserver extends CordovaPlugin{
                         for (Map.Entry<String, String> entry : f_parms.entrySet()) {
                           parms.put(entry.getKey(), entry.getValue());
                         }
-                        obj.put("parms", parms);
+                        obj.put("params", parms);
 
                         JSONObject headers = new JSONObject();
                         for (Map.Entry<String, String> entry : f_headers.entrySet()) {
