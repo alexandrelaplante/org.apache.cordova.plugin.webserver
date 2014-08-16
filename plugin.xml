@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="org.apache.cordova.plugin.webserver"
+    version="0.2.0">
+  
+  <name>TTS</name>
+  <description>Cordova Webserver Plugin</description>
+  <license>Apache 2.0</license>
+  <keywords>cordova,webserver,nanohttpd</keywords>
+  
+  <js-module src="www/webserver.js" name="webserver.js">
+    <clobbers target="window.plugins.webserver" />
+  </js-module>
+  
+  <!-- android -->
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="CordovaWebserver">
+        <param name="android-package" value="org.apache.cordova.plugin.webserver.CordovaWebserver"/>
+      </feature>
+    </config-file>
+    
+    <source-file src="src/android/webserver/CordovaWebserver.java" target-dir="src/org/apache/cordova/plugin/webserver/" />
+    <source-file src="src/android/webserver/NanoHTTPD.java" target-dir="src/org/apache/cordova/plugin/webserver/" />
+        
+  </platform>
+  
+</plugin>
