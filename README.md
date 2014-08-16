@@ -19,6 +19,7 @@ Add the following permissions to AndroidManifest.xml
 
 ```javascript
 
+// Start the server
 window.plugins.webserver.start(callback, [{'port' : 8080}]);
 
 function callback (request) {
@@ -37,7 +38,11 @@ function callback (request) {
             'data' : '<html><head></head><body>'+ JSON.stringify(request) +'</body></html>'
         }];
 
+        // Send a response to this request
         window.plugins.webserver.respond(response);
     }
 }
+
+// Stop the server
+window.plugins.webserver.stop();
 ```

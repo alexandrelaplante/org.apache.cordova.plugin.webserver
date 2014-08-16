@@ -6,6 +6,10 @@ var webserver = {
         exec(callback, function(err){alert(err);},'CordovaWebserver', 'start', args);
     },
 
+    stop: function () {
+        exec(function(res){}, function(err){alert(err);},'CordovaWebserver', 'stop', []);
+    },
+
     respond: function (args) {
         exec(function(res){}, function(err){alert(err);},'CordovaWebserver', 'respond', args);
     },

@@ -21,6 +21,7 @@ import org.apache.cordova.plugin.webserver.NanoHTTPD.Response;
 public class CordovaWebserver extends CordovaPlugin{
     
     private static final String START = "start";
+    private static final String STOP = "stop";
     private static final String RESPOND = "respond";
     private CallbackContext callbackContext = null; 
 
@@ -64,6 +65,10 @@ public class CordovaWebserver extends CordovaPlugin{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        } else if (action.contentEquals(STOP)) {
+
+            server.stop();
 
         } else if (action.contentEquals(RESPOND)) {
 
